@@ -145,7 +145,6 @@ input:focus{outline:none;border-color:#7b4fa0;background:#fff;box-shadow:0 0 0 3
         <tr><td>희망 평형</td><td id="infoType">-</td></tr>
         <tr><td>특공 구분</td><td id="infoSpecial">-</td></tr>
         <tr><td>주택 소유</td><td id="infoHouseOwn">-</td></tr>
-        <tr><td>입주 희망</td><td id="infoMoveIn">-</td></tr>
         <tr><td>등록일시</td><td id="infoRegDt">-</td></tr>
       </table>
     </div>
@@ -188,6 +187,20 @@ input:focus{outline:none;border-color:#7b4fa0;background:#fff;box-shadow:0 0 0 3
 </div>
 
 <script>
+function formatRegDt(dtStr){
+  if(!dtStr) return '-';
+  try{
+    // 이미 yyyy-MM-dd HH:mm:ss 형식이면 그대로
+    if(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(String(dtStr))) return String(dtStr).substring(0,19);
+    // ISO 형식(UTC)이면 KST(+9)로 변환
+    const d = new Date(dtStr);
+    if(isNaN(d.getTime())) return String(dtStr);
+    const kst = new Date(d.getTime() + 9*60*60*1000);
+    const pad = n => String(n).padStart(2,'0');
+    return kst.getFullYear()+'-'+pad(kst.getMonth()+1)+'-'+pad(kst.getDate())+' '+pad(kst.getHours())+':'+pad(kst.getMinutes())+':'+pad(kst.getSeconds());
+  }catch(e){ return String(dtStr); }
+}
+
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyU-Qigmb2D92nnZAZxxfsbtqyDTzAacRuFBpPS3mh7y6wgKT0YLcjNgUtKaZ6Z94Q0/exec';
 let currentPhone='', currentPw='';
 
@@ -243,8 +256,7 @@ function renderInfo(d){
   document.getElementById('infoType').textContent=(d.type||'-')+'형';
   document.getElementById('infoSpecial').textContent=d.special||'-';
   document.getElementById('infoHouseOwn').textContent=d.houseOwn||'-';
-  document.getElementById('infoMoveIn').textContent=d.moveIn||'-';
-  document.getElementById('infoRegDt').textContent=d.regDt||'-';
+  document.getElementById('infoRegDt').textContent=formatRegDt(d.regDt);
 
   // 취소 버튼 표시
   document.getElementById('cancelBtn').style.display=(d.status==='계약완료'||d.status==='취소')?'none':'block';
