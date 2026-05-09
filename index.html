@@ -234,7 +234,7 @@ input:focus,select:focus{outline:none;border-color:#e85c1a;background:#fff;box-s
       </div>
       <div class="form-group">
         <label for="birth">생년월일 <span class="req">*</span><span class="hint">중복방지 확인용</span></label>
-        <input type="date" id="birth" max="2010-12-31" min="1930-01-01">
+        <input type="date" id="birth" min="1930-01-01">
         <div class="error-msg" id="err-birth">생년월일을 입력해 주세요.</div>
       </div>
 
@@ -302,7 +302,7 @@ input:focus,select:focus{outline:none;border-color:#e85c1a;background:#fff;box-s
             <tr><th>항목</th><th>내용</th></tr>
           </thead>
           <tbody>
-            <tr><td>제공받는 자</td><td>호반건설(주) 및 위탁 관리업체</td></tr>
+            <tr><td>제공받는 자</td><td>(주)호반건설, 대전용산개발(주) 및 위탁 관리업체</td></tr>
             <tr><td>제공 목적</td><td>입주예약 계약 진행, 자격 검증, 관련 안내</td></tr>
             <tr><td>제공 항목</td><td>성명, 연락처, 생년월일, 주택소유여부</td></tr>
             <tr><td>보유·이용 기간</td><td>제공 목적 달성 시까지 또는 계약 완료 후 3개월</td></tr>
@@ -329,7 +329,7 @@ input:focus,select:focus{outline:none;border-color:#e85c1a;background:#fff;box-s
       <div style="background:#fff8f5;border:1px solid #f5c6b8;border-radius:3px;padding:10px 12px;margin-top:10px;font-size:11px;color:#888;line-height:1.8">
         귀하는 개인정보 수집·이용에 대한 동의를 거부할 권리가 있습니다.<br>
         수집된 개인정보는 위 목적 이외의 용도로 이용되지 않으며, 이용 목적이 변경될 경우 별도 동의를 받겠습니다.<br>
-        개인정보 처리에 관한 문의: 호반건설(주) 고객센터
+        개인정보 처리에 관한 문의: (주)호반건설 고객센터
       </div>
 
       <div class="error-msg" id="err-agree" style="margin-top:8px">필수 동의 항목에 모두 체크해 주세요.</div>
@@ -407,6 +407,9 @@ document.querySelectorAll('input[name="type"]').forEach(r=>{
 });
 
 /* 전화번호 자동 하이픈 */
+// 생년월일 max = 오늘
+document.getElementById('birth').max = new Date().toISOString().split('T')[0];
+
 document.getElementById('phone').addEventListener('input',function(){
   let v=this.value.replace(/\D/g,'');
   if(v.length>=7) v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
