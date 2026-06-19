@@ -63,6 +63,14 @@ input:focus{outline:none;border-color:#e85c1a;background:#fff;box-shadow:0 0 0 3
 .info-table td:first-child{color:#888;width:42%}
 .info-table td:last-child{font-weight:500;color:#1a1a2e}
 
+/* 과거(취소 포함) 이력 목록 */
+.history-item{display:flex;justify-content:space-between;align-items:center;padding:11px 4px;border-bottom:1px solid #f0f3f8}
+.history-item:last-child{border-bottom:none}
+.history-left{display:flex;flex-direction:column;gap:3px}
+.history-seq{font-size:13px;font-weight:700;color:#1a1a2e}
+.history-sub{font-size:11px;color:#999}
+.history-status{font-size:11px;padding:3px 10px;border-radius:14px;font-weight:700;white-space:nowrap}
+
 /* 모달 */
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:200;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.show{display:flex}
@@ -153,6 +161,12 @@ input:focus{outline:none;border-color:#e85c1a;background:#fff;box-shadow:0 0 0 3
       </table>
     </div>
 
+    <!-- 과거(취소 포함) 예약 이력 -->
+    <div class="card" id="historySection" style="display:none">
+      <div class="card-title">과거 예약 이력</div>
+      <div id="historyList"></div>
+    </div>
+
     <button class="btn btn-danger" id="cancelBtn" onclick="showCancelModal()">예약 취소 신청</button>
     <button class="btn btn-outline" onclick="doLogout()">로그아웃</button>
     <p style="text-align:center;font-size:11px;color:#bbb;margin-top:10px;line-height:1.7">
@@ -204,6 +218,8 @@ function formatRegDt(dtStr){
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyU-Qigmb2D92nnZAZxxfsbtqyDTzAacRuFBpPS3mh7y6wgKT0YLcjNgUtKaZ6Z94Q0/exec';
 let currentPhone='', currentPw='';
 
+const STATUS_MAP_PILL = {'대기':['sp-wait','대기 중'],'확정':['sp-confirm','확정'],'계약완료':['sp-done','계약 완료'],'취소':['sp-cancel','취소됨']};
+
 // 전화번호 자동 하이픈
 document.getElementById('loginPhone').addEventListener('input',function(){
   let v=this.value.replace(/\D/g,'');
@@ -237,8 +253,7 @@ function renderInfo(d){
   document.getElementById('siteBadge').textContent=(d.site||'-')+' · '+(d.type||'-')+'형';
 
   // 상태 배지
-  const statusMap={'대기':['sp-wait','대기 중'],'확정':['sp-confirm','확정'],'계약완료':['sp-done','계약 완료'],'취소':['sp-cancel','취소됨']};
-  const [cls,label]=statusMap[d.status]||['sp-wait',d.status];
+  const [cls,label]=STATUS_MAP_PILL[d.status]||['sp-wait',d.status];
   const pill=document.getElementById('statusPill');
   pill.className='status-pill '+cls;
   pill.textContent=label;
@@ -261,6 +276,35 @@ function renderInfo(d){
 
   // 취소 버튼 표시
   document.getElementById('cancelBtn').style.display=(d.status==='계약완료'||d.status==='취소')?'none':'block';
+
+  // 과거(취소 포함) 예약 이력
+  renderHistory(d.history);
+}
+
+function renderHistory(history){
+  const section=document.getElementById('historySection');
+  const listEl=document.getElementById('historyList');
+
+  if(!history || history.length===0){
+    section.style.display='none';
+    listEl.innerHTML='';
+    return;
+  }
+
+  section.style.display='block';
+  listEl.innerHTML = history.map(h=>{
+    const [cls,label]=STATUS_MAP_PILL[h.status]||['sp-wait',h.status];
+    const specialTxt=(h.special && h.special!=='해당없음') ? ' · '+h.special : '';
+    const regTxt=formatRegDt(h.regDt).substring(0,16);
+    return `
+      <div class="history-item">
+        <div class="history-left">
+          <span class="history-seq">${h.seqId}</span>
+          <span class="history-sub">${h.site} · ${h.type}형${specialTxt} · 등록 ${regTxt}</span>
+        </div>
+        <span class="status-pill history-status ${cls}">${label}</span>
+      </div>`;
+  }).join('');
 }
 
 function showCancelModal(){ document.getElementById('cancelModal').classList.add('show'); }
@@ -289,6 +333,7 @@ function closeResultModal(){ document.getElementById('resultModal').classList.re
 function doLogout(){
   currentPhone=''; currentPw='';
   document.getElementById('infoSection').style.display='none';
+  document.getElementById('historySection').style.display='none';
   document.getElementById('loginSection').style.display='block';
   document.getElementById('loginPhone').value='';
   document.getElementById('loginPw').value='';
