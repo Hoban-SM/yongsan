@@ -4,137 +4,102 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>내 예약 조회</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans KR',sans-serif;background:#f0f3f8;color:#1a1a2e;min-height:100vh}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', sans-serif; background: #f5f5f5; color: #222; }
+  .container { max-width: 480px; margin: 0 auto; padding: 20px 16px 60px; }
+  .header { text-align: center; padding: 24px 0 20px; }
+  .header h1 { font-size: 20px; font-weight: 700; color: #1a3a6b; }
 
-.top-bar{background:#e85c1a;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
-.top-bar .logo{color:#fff;font-size:15px;font-weight:700}
-.top-bar .nav-link{color:rgba(255,255,255,0.8);font-size:12px;text-decoration:none;border:1px solid rgba(255,255,255,0.3);padding:5px 12px;border-radius:20px}
+  .card { background: #fff; border-radius: 10px; padding: 18px; margin-bottom: 14px; border: 1px solid #e0e0e0; }
+  .card-title { font-size: 13px; font-weight: 700; color: #444; margin-bottom: 14px; }
 
-.hero{background:linear-gradient(135deg,#e85c1a 0%,#e85c1a 100%);padding:24px 20px 20px;text-align:center;color:#fff}
-.hero h1{font-size:20px;font-weight:700;margin-bottom:5px}
-.hero p{font-size:13px;opacity:0.85}
+  input[type="tel"], input[type="password"] {
+    width: 100%; padding: 11px 13px; border: 1px solid #ddd; border-radius: 7px;
+    font-size: 14px; margin-bottom: 10px; background: #fafafa;
+  }
+  input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
 
-.container{max-width:480px;margin:0 auto;padding:16px 14px 60px}
+  .btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
+  .btn-primary { background: #1a3a6b; color: #fff; }
+  .btn-danger { background: #fff; color: #c62828; border: 1px solid #c62828; margin-top: 12px; }
+  .btn:disabled { background: #ccc; cursor: not-allowed; }
 
-.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:14px;border:1px solid #e8eaf0;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
-.card-title{font-size:13px;font-weight:700;color:#e85c1a;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #fff3ee;display:flex;align-items:center;gap:6px}
-.card-title::before{content:'';width:4px;height:14px;background:#e85c1a;border-radius:2px;display:inline-block}
+  .seq-display { text-align: center; padding: 20px 0 10px; }
+  .seq-num { font-size: 52px; font-weight: 700; color: #1a3a6b; line-height: 1; }
+  .seq-label { font-size: 13px; color: #888; margin-top: 4px; }
 
-input[type=tel],input[type=password]{width:100%;padding:11px 13px;border:1.5px solid #dde1e9;border-radius:8px;font-size:14px;color:#1a1a2e;background:#fafbff;font-family:inherit;transition:border-color 0.2s,box-shadow 0.2s;margin-bottom:10px}
-input:focus{outline:none;border-color:#e85c1a;background:#fff;box-shadow:0 0 0 3px rgba(232,92,26,0.1)}
+  .status-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+  .s-waiting   { background: #fff8e1; color: #f57f17; }
+  .s-confirmed { background: #e8f0fe; color: #1a73e8; }
+  .s-completed { background: #e8f5e9; color: #2e7d32; }
+  .s-canceled  { background: #ffebee; color: #c62828; }
 
-.btn{width:100%;padding:13px;border:none;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s}
-.btn-primary{background:#e85c1a;color:#fff}
-.btn-primary:hover{background:#0d2149;transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,26,26,0.35)}
-.btn-primary:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none}
-.btn-danger{background:#fff;color:#c62828;border:1.5px solid #c62828;margin-top:10px}
-.btn-danger:hover{background:#ffebee}
-.btn-outline{background:#f0f3f8;color:#555;border:1.5px solid #dde1e9;margin-top:8px}
+  .info-table { width: 100%; }
+  .info-table tr { border-bottom: 1px solid #f5f5f5; }
+  .info-table tr:last-child { border-bottom: none; }
+  .info-table td { padding: 9px 4px; font-size: 13px; }
+  .info-table td:first-child { color: #888; width: 40%; }
+  .info-table td:last-child { font-weight: 500; }
 
-.err-text{font-size:12px;color:#e53935;margin-bottom:10px;display:none}
-.err-text.show{display:block}
+  .progress-section { margin: 14px 0; }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 6px; }
+  .progress-bar { height: 10px; background: #f0f0f0; border-radius: 5px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #1a3a6b, #1a73e8); border-radius: 5px; transition: width 0.8s ease; }
 
-/* 순번 카드 */
-.seq-card{background:linear-gradient(135deg,#e85c1a,#2d6cbe);border-radius:14px;padding:24px 20px;color:#fff;text-align:center;margin-bottom:14px}
-.seq-badge{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:4px 14px;font-size:12px;margin-bottom:14px}
-.seq-num{font-size:58px;font-weight:700;line-height:1;letter-spacing:1px;margin-bottom:6px}
-.seq-type{font-size:14px;opacity:0.85}
-.status-pill{display:inline-block;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:700;margin-top:14px}
-.sp-wait{background:#fff8e1;color:#f57f17}
-.sp-confirm{background:#fff3ee;color:#e85c1a}
-.sp-done{background:#e8f5e9;color:#2e7d32}
-.sp-cancel{background:#ffebee;color:#c62828}
+  .error-box { background: #ffebee; border: 1px solid #ef9a9a; border-radius: 8px; padding: 12px; text-align: center; color: #c62828; font-size: 13px; }
+  .loading-box { text-align: center; padding: 20px; color: #888; font-size: 14px; }
 
-/* 진행 바 */
-.progress-section{margin:14px 0 6px}
-.progress-labels{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.75);margin-bottom:8px}
-.progress-bar{height:8px;background:rgba(255,255,255,0.2);border-radius:4px;overflow:hidden}
-.progress-fill{height:100%;background:#fff;border-radius:4px;transition:width 1s ease}
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: #fff; border-radius: 12px; padding: 28px 22px; max-width: 320px; width: 90%; text-align: center; }
+  .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #c62828; }
+  .modal-desc { font-size: 13px; color: #555; line-height: 1.7; margin-bottom: 18px; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-btn-cancel { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 7px; background: #fff; font-size: 14px; cursor: pointer; }
+  .modal-btn-confirm { flex: 1; padding: 10px; border: none; border-radius: 7px; background: #c62828; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
 
-/* 정보 테이블 */
-.info-table{width:100%}
-.info-table tr{border-bottom:1px solid #f0f3f8}
-.info-table tr:last-child{border-bottom:none}
-.info-table td{padding:10px 4px;font-size:13px}
-.info-table td:first-child{color:#888;width:42%}
-.info-table td:last-child{font-weight:500;color:#1a1a2e}
-
-/* 과거(취소 포함) 이력 목록 */
-.history-item{display:flex;justify-content:space-between;align-items:center;padding:11px 4px;border-bottom:1px solid #f0f3f8}
-.history-item:last-child{border-bottom:none}
-.history-left{display:flex;flex-direction:column;gap:3px}
-.history-seq{font-size:13px;font-weight:700;color:#1a1a2e}
-.history-sub{font-size:11px;color:#999}
-.history-status{font-size:11px;padding:3px 10px;border-radius:14px;font-weight:700;white-space:nowrap}
-
-/* 모달 */
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:200;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.show{display:flex}
-.modal{background:#fff;border-radius:16px;padding:28px 24px;max-width:340px;width:100%;text-align:center;animation:modalIn 0.25s ease}
-@keyframes modalIn{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-icon{font-size:44px;margin-bottom:12px}
-.modal-title{font-size:18px;font-weight:700;margin-bottom:8px;color:#c62828}
-.modal-desc{font-size:13px;color:#555;line-height:1.7;margin-bottom:20px}
-.modal-actions{display:flex;gap:10px}
-.mbtn{flex:1;padding:11px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:none}
-.mbtn-cancel{background:#f0f3f8;color:#555;border:1px solid #dde1e9}
-.mbtn-confirm{background:#c62828;color:#fff}
-
-.loading-box{text-align:center;padding:30px;color:#888;font-size:14px}
-.spinner{display:inline-block;width:18px;height:18px;border:2px solid #ddd;border-top-color:#e85c1a;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:8px;vertical-align:middle}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-@media(max-width:480px){.seq-num{font-size:48px}}
+  /* 과거(취소 포함) 이력 목록 */
+  .history-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 6px 16px; margin-bottom: 14px; }
+  .history-item { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid #f5f5f5; }
+  .history-item:last-child { border-bottom: none; }
+  .history-left { display: flex; flex-direction: column; gap: 3px; }
+  .history-seq { font-size: 13px; font-weight: 700; color: #444; }
+  .history-sub { font-size: 11px; color: #999; }
+  .history-status { font-size: 11px; padding: 3px 10px; border-radius: 14px; font-weight: 700; white-space: nowrap; }
 </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <div class="top-logo">
-    <div class="logo-box"><span>HOBAN</span></div>
-    <span style="color:#aaa;font-size:13px">입주예약 시스템</span>
-  </div>
-  <a href="index.html" class="nav-link">← 예약 접수</a>
-</div>
-
-<div class="hero">
-  <h1>내 예약 조회</h1>
-  <p>연락처와 비밀번호로 예약 현황을 확인하세요</p>
-</div>
-
 <div class="container">
+  <div class="header">
+    <h1>내 예약 조회</h1>
+  </div>
 
-  <!-- 로그인 섹션 -->
+  <!-- 로그인 폼 -->
   <div id="loginSection">
     <div class="card">
-      <div class="card-title">예약 조회 로그인</div>
-      <input type="tel" id="loginPhone" placeholder="연락처 (010-0000-0000)" maxlength="13">
+      <div class="card-title">연락처 + 비밀번호로 조회</div>
+      <input type="tel" id="loginPhone" placeholder="010-0000-0000" maxlength="13">
       <input type="password" id="loginPw" placeholder="비밀번호" maxlength="20">
-      <div class="err-text" id="loginErr"></div>
+      <div id="loginError" style="font-size:12px; color:#c62828; margin-bottom:10px; display:none;"></div>
       <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">조회하기</button>
     </div>
-    <p style="text-align:center;font-size:12px;color:#aaa;margin-top:12px">
-      <a href="index.html" style="color:#e85c1a;font-weight:600">← 신규 예약 접수</a>
+    <p style="text-align:center; font-size:12px; color:#aaa; margin-top:12px;">
+      <a href="?page=reserve" style="color:#1a3a6b;">← 신규 예약 접수</a>
     </p>
   </div>
 
-  <!-- 로딩 -->
-  <div id="loadingSection" class="loading-box" style="display:none">
-    <span class="spinner"></span>조회 중입니다...
-  </div>
+  <!-- 조회 결과 -->
+  <div id="infoSection" style="display:none;">
 
-  <!-- 결과 섹션 -->
-  <div id="infoSection" style="display:none">
+    <div class="card" style="text-align:center;">
+      <div id="statusBadgeWrap" style="margin-bottom:14px;"></div>
+      <div class="seq-display">
+        <div class="seq-num" id="seqNum">-</div>
+        <div class="seq-label" id="seqSub">-</div>
+      </div>
 
-    <!-- 순번 카드 -->
-    <div class="seq-card">
-      <div class="seq-badge" id="siteBadge">2블럭 · 84A형</div>
-      <div class="seq-num" id="seqNum">-</div>
-      <div class="seq-type">나의 대기 순번</div>
       <div class="progress-section" id="progressSection">
         <div class="progress-labels">
           <span>내 앞 대기: <strong id="aheadCount">-</strong>명</span>
@@ -144,10 +109,8 @@ input:focus{outline:none;border-color:#e85c1a;background:#fff;box-shadow:0 0 0 3
           <div class="progress-fill" id="progressFill" style="width:0%"></div>
         </div>
       </div>
-      <div><span class="status-pill" id="statusPill">대기 중</span></div>
     </div>
 
-    <!-- 상세 정보 -->
     <div class="card">
       <div class="card-title">예약 상세 정보</div>
       <table class="info-table">
@@ -162,187 +125,205 @@ input:focus{outline:none;border-color:#e85c1a;background:#fff;box-shadow:0 0 0 3
     </div>
 
     <!-- 과거(취소 포함) 예약 이력 -->
-    <div class="card" id="historySection" style="display:none">
-      <div class="card-title">과거 예약 이력</div>
-      <div id="historyList"></div>
+    <div id="historySection" style="display:none;">
+      <div class="card-title" style="padding:0 2px;">과거 예약 이력</div>
+      <div class="history-card" id="historyList"></div>
     </div>
 
     <button class="btn btn-danger" id="cancelBtn" onclick="showCancelModal()">예약 취소 신청</button>
-    <button class="btn btn-outline" onclick="doLogout()">로그아웃</button>
-    <p style="text-align:center;font-size:11px;color:#bbb;margin-top:10px;line-height:1.7">
-      취소 후 순번은 회수되며 재접수 시 후순위 처리됩니다.
+    <p style="text-align:center; font-size:11px; color:#bbb; margin-top:8px; line-height:1.7;">
+      취소 후 순번은 회수되며, 재접수 시 후순위 처리됩니다.
+    </p>
+    <p style="text-align:center; margin-top:16px;">
+      <a href="#" onclick="logout()" style="font-size:12px; color:#aaa;">로그아웃</a>
     </p>
   </div>
 
+  <div id="loadingSection" class="loading-box" style="display:none;">처리 중입니다...</div>
+  <div id="errorSection" style="display:none;"></div>
 </div>
 
 <!-- 취소 확인 모달 -->
 <div class="modal-overlay" id="cancelModal">
   <div class="modal">
-    <div class="modal-icon">⚠️</div>
     <div class="modal-title">예약을 취소하시겠습니까?</div>
     <div class="modal-desc">
       취소 후에는 되돌릴 수 없습니다.<br>
       순번이 회수되며 재접수 시 후순위 처리됩니다.
     </div>
     <div class="modal-actions">
-      <button class="mbtn mbtn-cancel" onclick="closeCancelModal()">돌아가기</button>
-      <button class="mbtn mbtn-confirm" onclick="doCancel()">취소 확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- 결과 모달 -->
-<div class="modal-overlay" id="resultModal">
-  <div class="modal">
-    <div class="modal-icon" id="resultIcon">✅</div>
-    <div class="modal-title" id="resultTitle" style="color:#e85c1a"></div>
-    <div class="modal-desc" id="resultMsg"></div>
-    <div class="modal-actions" style="justify-content:center">
-      <button class="mbtn mbtn-cancel" style="flex:none;padding:11px 32px" onclick="closeResultModal()">확인</button>
+      <button class="modal-btn-cancel" onclick="closeCancelModal()">돌아가기</button>
+      <button class="modal-btn-confirm" onclick="doCancel()">취소 확인</button>
     </div>
   </div>
 </div>
 
 <script>
-function formatRegDt(dtStr){
-  if(!dtStr) return '-';
-  try{
-    // Code.gs에서 이미 KST(Asia/Seoul)로 저장 → 변환 없이 앞 19자만 잘라서 표시
-    const s = String(dtStr).trim();
-    if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,19);
-    return s;
-  }catch(e){ return String(dtStr); }
-}
+const SCRIPT_URL = '<?= ScriptApp.getService().getUrl() ?>';
+let currentPhone = '', currentPw = '', currentRowIndex = null;
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyU-Qigmb2D92nnZAZxxfsbtqyDTzAacRuFBpPS3mh7y6wgKT0YLcjNgUtKaZ6Z94Q0/exec';
-let currentPhone='', currentPw='';
-
-const STATUS_MAP_PILL = {'대기':['sp-wait','대기 중'],'확정':['sp-confirm','확정'],'계약완료':['sp-done','계약 완료'],'취소':['sp-cancel','취소됨']};
+const STATUS_MAP = {
+  '대기':     { cls: 's-waiting',   label: '대기 중' },
+  '확정':     { cls: 's-confirmed', label: '확정' },
+  '계약완료': { cls: 's-completed', label: '계약완료' },
+  '취소':     { cls: 's-canceled',  label: '취소됨' }
+};
 
 // 전화번호 자동 하이픈
-document.getElementById('loginPhone').addEventListener('input',function(){
-  let v=this.value.replace(/\D/g,'');
-  if(v.length>=7) v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
-  else if(v.length>=4) v=v.slice(0,3)+'-'+v.slice(3);
-  this.value=v;
+document.getElementById('loginPhone').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g, '');
+  if (v.length >= 7) v = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11);
+  else if (v.length >= 4) v = v.slice(0,3) + '-' + v.slice(3);
+  this.value = v;
 });
-document.getElementById('loginPw').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
 
-async function doLogin(){
-  const phone=document.getElementById('loginPhone').value.trim();
-  const pw=document.getElementById('loginPw').value;
-  const errEl=document.getElementById('loginErr');
-  if(!phone||!pw){ errEl.textContent='연락처와 비밀번호를 모두 입력해 주세요.'; errEl.classList.add('show'); return; }
+// Enter 키 로그인
+document.getElementById('loginPw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+async function doLogin() {
+  const phone = document.getElementById('loginPhone').value.trim();
+  const pw    = document.getElementById('loginPw').value;
+  const errEl = document.getElementById('loginError');
+
+  if (!phone || !pw) { errEl.textContent = '연락처와 비밀번호를 모두 입력해 주세요.'; errEl.style.display = 'block'; return; }
 
   setLoading(true);
-  try{
-    const res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'myinfo',phone,password:pw})});
-    const data=await res.json();
-    if(!data.ok){ errEl.textContent=data.msg; errEl.classList.add('show'); }
-    else{ currentPhone=phone; currentPw=pw; renderInfo(data); }
-  }catch(e){ errEl.textContent='네트워크 오류가 발생했습니다.'; errEl.classList.add('show'); }
-  finally{ setLoading(false); }
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'myinfo', phone, password: pw })
+    });
+    const data = await res.json();
+
+    if (!data.ok) {
+      errEl.textContent = data.msg;
+      errEl.style.display = 'block';
+    } else {
+      currentPhone = phone;
+      currentPw    = pw;
+      renderInfo(data);
+    }
+  } catch(e) {
+    errEl.textContent = '네트워크 오류가 발생했습니다.';
+    errEl.style.display = 'block';
+  } finally {
+    setLoading(false);
+  }
 }
 
-function renderInfo(d){
-  document.getElementById('loginSection').style.display='none';
-  document.getElementById('infoSection').style.display='block';
+function renderInfo(d) {
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('infoSection').style.display = 'block';
 
-  document.getElementById('seqNum').textContent=d.seqId||'-';
-  document.getElementById('siteBadge').textContent=(d.site||'-')+' · '+(d.type||'-')+'형';
+  currentRowIndex = d.rowIndex || null;
+
+  // 순번 및 타입
+  document.getElementById('seqNum').textContent = d.seqId;
+  document.getElementById('seqSub').textContent = `${d.type} · ${d.site}`;
 
   // 상태 배지
-  const [cls,label]=STATUS_MAP_PILL[d.status]||['sp-wait',d.status];
-  const pill=document.getElementById('statusPill');
-  pill.className='status-pill '+cls;
-  pill.textContent=label;
+  const s = STATUS_MAP[d.status] || { cls: '', label: d.status };
+  document.getElementById('statusBadgeWrap').innerHTML =
+    `<span class="status-badge ${s.cls}">${s.label}</span>`;
 
-  // 진행 바
-  if(d.totalWaiting>0){
-    const pct=Math.round(((d.totalWaiting-d.aheadCount)/d.totalWaiting)*100);
-    setTimeout(()=>document.getElementById('progressFill').style.width=pct+'%',100);
-    document.getElementById('aheadCount').textContent=d.aheadCount;
-    document.getElementById('totalWaiting').textContent=d.totalWaiting;
+  // 진행률 바 (취소/완료 건은 숨김)
+  const progressSection = document.getElementById('progressSection');
+  if (d.status === '대기' || d.status === '확정') {
+    progressSection.style.display = 'block';
+    if (d.totalWaiting > 0) {
+      const pct = Math.round(((d.totalWaiting - d.aheadCount) / d.totalWaiting) * 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('aheadCount').textContent   = d.aheadCount;
+      document.getElementById('totalWaiting').textContent = d.totalWaiting;
+    }
+  } else {
+    progressSection.style.display = 'none';
   }
 
-  document.getElementById('infoName').textContent=d.name||'-';
-  document.getElementById('infoSite').textContent=d.site||'-';
-  document.getElementById('infoType').textContent=(d.type||'-')+'형';
-  document.getElementById('infoSpecial').textContent=d.special||'-';
-  document.getElementById('infoHouseOwn').textContent=d.houseOwn||'-';
-  document.getElementById('infoMoveIn').textContent=d.moveIn||'-';
-  document.getElementById('infoRegDt').textContent=formatRegDt(d.regDt);
+  // 상세 정보
+  document.getElementById('infoName').textContent    = d.name;
+  document.getElementById('infoSite').textContent    = d.site;
+  document.getElementById('infoType').textContent    = d.type;
+  document.getElementById('infoSpecial').textContent = d.special || '-';
+  document.getElementById('infoHouseOwn').textContent= d.houseOwn || '-';
+  document.getElementById('infoMoveIn').textContent  = d.moveIn;
+  document.getElementById('infoRegDt').textContent   = d.regDt;
 
-  // 취소 버튼 표시
-  document.getElementById('cancelBtn').style.display=(d.status==='계약완료'||d.status==='취소')?'none':'block';
+  // 취소 버튼: 완료/취소 상태는 숨김
+  document.getElementById('cancelBtn').style.display =
+    (d.status === '계약완료' || d.status === '취소') ? 'none' : 'block';
 
   // 과거(취소 포함) 예약 이력
   renderHistory(d.history);
 }
 
-function renderHistory(history){
-  const section=document.getElementById('historySection');
-  const listEl=document.getElementById('historyList');
+function renderHistory(history) {
+  const section = document.getElementById('historySection');
+  const listEl  = document.getElementById('historyList');
 
-  if(!history || history.length===0){
-    section.style.display='none';
-    listEl.innerHTML='';
+  if (!history || history.length === 0) {
+    section.style.display = 'none';
+    listEl.innerHTML = '';
     return;
   }
 
-  section.style.display='block';
-  listEl.innerHTML = history.map(h=>{
-    const [cls,label]=STATUS_MAP_PILL[h.status]||['sp-wait',h.status];
-    const specialTxt=(h.special && h.special!=='해당없음') ? ' · '+h.special : '';
-    const regTxt=formatRegDt(h.regDt).substring(0,16);
+  section.style.display = 'block';
+  listEl.innerHTML = history.map(h => {
+    const s = STATUS_MAP[h.status] || { cls: '', label: h.status };
+    const specialTxt = (h.special && h.special !== '해당없음') ? ' · ' + h.special : '';
+    const regTxt = h.regDt ? String(h.regDt).substring(0, 16) : '';
     return `
       <div class="history-item">
         <div class="history-left">
           <span class="history-seq">${h.seqId}</span>
           <span class="history-sub">${h.site} · ${h.type}형${specialTxt} · 등록 ${regTxt}</span>
         </div>
-        <span class="status-pill history-status ${cls}">${label}</span>
+        <span class="status-badge history-status ${s.cls}">${s.label}</span>
       </div>`;
   }).join('');
 }
 
-function showCancelModal(){ document.getElementById('cancelModal').classList.add('show'); }
-function closeCancelModal(){ document.getElementById('cancelModal').classList.remove('show'); }
+function showCancelModal() { document.getElementById('cancelModal').classList.add('show'); }
+function closeCancelModal() { document.getElementById('cancelModal').classList.remove('show'); }
 
-async function doCancel(){
-  closeCancelModal(); setLoading(true);
-  try{
-    const res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'cancel',phone:currentPhone,password:currentPw})});
-    const data=await res.json();
-    showResult(data.ok, data.ok?'취소 완료':'취소 실패', data.msg);
-    if(data.ok) setTimeout(doLogout,2000);
-  }catch(e){ showResult(false,'오류','처리 중 오류가 발생했습니다.'); }
-  finally{ setLoading(false); }
+async function doCancel() {
+  closeCancelModal();
+  setLoading(true);
+  try {
+    const payload = { action: 'cancel', phone: currentPhone, password: currentPw };
+    if (currentRowIndex) payload.rowIndex = currentRowIndex;
+
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    alert(data.msg);
+    if (data.ok) logout();
+  } catch(e) {
+    alert('처리 중 오류가 발생했습니다.');
+  } finally {
+    setLoading(false);
+  }
 }
 
-function showResult(ok,title,msg){
-  document.getElementById('resultIcon').textContent=ok?'✅':'❌';
-  document.getElementById('resultTitle').textContent=title;
-  document.getElementById('resultTitle').style.color=ok?'#e85c1a':'#c62828';
-  document.getElementById('resultMsg').textContent=msg;
-  document.getElementById('resultModal').classList.add('show');
-}
-function closeResultModal(){ document.getElementById('resultModal').classList.remove('show'); }
-
-function doLogout(){
-  currentPhone=''; currentPw='';
-  document.getElementById('infoSection').style.display='none';
-  document.getElementById('historySection').style.display='none';
-  document.getElementById('loginSection').style.display='block';
-  document.getElementById('loginPhone').value='';
-  document.getElementById('loginPw').value='';
-  document.getElementById('loginErr').classList.remove('show');
+function logout() {
+  currentPhone = '';
+  currentPw    = '';
+  currentRowIndex = null;
+  document.getElementById('infoSection').style.display   = 'none';
+  document.getElementById('historySection').style.display = 'none';
+  document.getElementById('loginSection').style.display  = 'block';
+  document.getElementById('loginPhone').value = '';
+  document.getElementById('loginPw').value    = '';
+  document.getElementById('loginError').style.display = 'none';
 }
 
-function setLoading(on){
-  document.getElementById('loadingSection').style.display=on?'block':'none';
-  document.getElementById('loginBtn').disabled=on;
+function setLoading(on) {
+  document.getElementById('loadingSection').style.display = on ? 'block' : 'none';
+  document.getElementById('loginBtn').disabled = on;
 }
 </script>
 </body>
