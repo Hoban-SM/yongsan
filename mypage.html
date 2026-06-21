@@ -192,9 +192,11 @@ async function doLogin() {
   setLoading(true);
   try {
     const res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'myinfo', phone, password: pw })
-    });
+     method: 'POST',
+     redirect: 'follow',
+     headers: { 'Content-Type': 'text/plain' },   // ← 추가: preflight 우회
+     body: JSON.stringify(payload)
+});
     const data = await res.json();
 
     if (!data.ok) {
