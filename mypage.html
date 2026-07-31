@@ -42,11 +42,6 @@
   .info-table td:first-child { color: #888; width: 40%; }
   .info-table td:last-child { font-weight: 500; }
 
-  .progress-section { margin: 14px 0; }
-  .progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 6px; }
-  .progress-bar { height: 10px; background: #f0f0f0; border-radius: 5px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, #1a3a6b, #1a73e8); border-radius: 5px; transition: width 0.8s ease; }
-
   .error-box { background: #ffebee; border: 1px solid #ef9a9a; border-radius: 8px; padding: 12px; text-align: center; color: #c62828; font-size: 13px; }
   .loading-box { text-align: center; padding: 20px; color: #888; font-size: 14px; }
 
@@ -237,20 +232,6 @@ function renderInfo(d) {
   const s = STATUS_MAP[d.status] || { cls: '', label: d.status };
   document.getElementById('statusBadgeWrap').innerHTML =
     `<span class="status-badge ${s.cls}">${s.label}</span>`;
-
-  // 진행률 바 (취소/완료 건은 숨김)
-  const progressSection = document.getElementById('progressSection');
-  if (d.status === '대기' || d.status === '확정') {
-    progressSection.style.display = 'block';
-    if (d.totalWaiting > 0) {
-      const pct = Math.round(((d.totalWaiting - d.aheadCount) / d.totalWaiting) * 100);
-      document.getElementById('progressFill').style.width = pct + '%';
-      document.getElementById('aheadCount').textContent   = d.aheadCount;
-      document.getElementById('totalWaiting').textContent = d.totalWaiting;
-    }
-  } else {
-    progressSection.style.display = 'none';
-  }
 
   // 상세 정보
   document.getElementById('infoName').textContent    = d.name;
